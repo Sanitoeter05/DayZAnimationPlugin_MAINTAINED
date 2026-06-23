@@ -1,5 +1,4 @@
 import bpy
-import bpy_types
 from mathutils import *
 from bpy_extras.wm_utils.progress_report import ProgressReport, ProgressReportSubstep
 from bpy_extras.io_utils import ExportHelper
@@ -182,7 +181,7 @@ class ExportTxaOperator(bpy.types.Operator, ExportHelper):
 		return True
 
 
-def ShouldSkipBone(bone:bpy_types.Bone, exportSettings:TxaExportSettings = TxaExportSettings()) -> bool:
+def ShouldSkipBone(bone:bpy.types.Bone, exportSettings:TxaExportSettings = TxaExportSettings(), armatureObj:bpy.types.Object = None) -> bool:
 	'''
 		Conditions that determine whether
 		or not to skip exporting this bone
@@ -191,8 +190,13 @@ def ShouldSkipBone(bone:bpy_types.Bone, exportSettings:TxaExportSettings = TxaEx
 	if bone.name.lower().endswith('ik_helper'):
 		return True
 	
-	if exportSettings.bExportSelectedBonesOnly and not bone.select:
-		return True
+	if exportSettings.bExportSelectedBonesOnly:
+		if armatureObj and bone.name in armatureObj.pose.bones:
+			if not armatureObj.pose.bones[bone.name].select:
+				return True
+		else:
+			if not getattr(bone, 'select', False):
+				return True
 	
 	if exportSettings.bExportShowingBonesOnly and bone.hide:
 		return True
@@ -216,7 +220,7 @@ def ShouldSkipBone(bone:bpy_types.Bone, exportSettings:TxaExportSettings = TxaEx
 	return False
 
 
-def GetBoneLocation(bone:bpy_types.PoseBone, exportSettings:TxaExportSettings = TxaExportSettings()) -> FVector:
+def GetBoneLocation(bone:bpy.types.PoseBone, exportSettings:TxaExportSettings = TxaExportSettings()) -> FVector:
 	mtxFix = Matrix(((0,1,0,0), (-1,0,0,0), (0,0,1,0), (0,0,0,1)))
 	mtx = bone.matrix @ mtxFix.inverted()
 
@@ -250,7 +254,7 @@ def GetBoneLocation(bone:bpy_types.PoseBone, exportSettings:TxaExportSettings = 
 	return FVector(vec.x, vec.y, vec.z)
 
 
-def GetBoneRotation(bone:bpy_types.PoseBone, exportSettings:TxaExportSettings = TxaExportSettings()) -> FQuaternion:
+def GetBoneRotation(bone:bpy.types.PoseBone, exportSettings:TxaExportSettings = TxaExportSettings()) -> FQuaternion:
 	mtxFix = Matrix(((0,1,0,0), (-1,0,0,0), (0,0,1,0), (0,0,0,1)))
 	mtx = bone.matrix @ mtxFix.inverted()
 
@@ -276,7 +280,7 @@ def GetBoneRotation(bone:bpy_types.PoseBone, exportSettings:TxaExportSettings = 
 	return FQuaternion(-q.w, -q.x, -q.y, -q.z)
 
 
-def GetBoneScale(bone:bpy_types.PoseBone, exportSettings:TxaExportSettings = TxaExportSettings()) -> FVector:
+def GetBoneScale(bone:bpy.types.PoseBone, exportSettings:TxaExportSettings = TxaExportSettings()) -> FVector:
 	return FVector(bone.scale.x, bone.scale.y, bone.scale.z)
 
 
@@ -447,10 +451,10 @@ def export_action(self, context, progress, filepath, exportSettings:TxaExportSet
     emptyKf = TxaKeyframe()
     emptyKf.frameEnd = frame_end
 
-    def RecurseExportBone(bone:bpy_types.Bone, parentTxaBone:TxaBone):
+    def RecurseExportBone(bone:bpy.types.Bone, parentTxaBone:TxaBone):
         txaBone = None
 
-        if ShouldSkipBone(bone, exportSettings) or (exportSettings.sAnimType == 'ADD' and bone.name not in boneKeyframes):
+        if ShouldSkipBone(bone, exportSettings, ob) or (exportSettings.sAnimType == 'ADD' and bone.name not in boneKeyframes):
             print(f'[DayzAnimationTools]: Info: Skipping export for bone "{bone.name}"')
         else:
             txaBone = TxaBone()

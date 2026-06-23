@@ -1,5 +1,4 @@
 import bpy
-import bpy_types
 import bmesh
 from mathutils import *
 from bpy_extras.wm_utils.progress_report import ProgressReport, ProgressReportSubstep
@@ -203,7 +202,7 @@ class ExportTxoOperator(bpy.types.Operator, ExportHelper):
 	def poll(self, context):
 		return True
 
-def ShouldExportBone(poseBone:bpy_types.Bone) -> bool:
+def ShouldExportBone(poseBone:bpy.types.Bone) -> bool:
 	'''
 		Conditions that determine whether
 		or not to skip exporting this bone
@@ -217,7 +216,7 @@ def ShouldExportBone(poseBone:bpy_types.Bone) -> bool:
 	
 	return True
 
-def GetBoneLocation(bone:bpy_types.Bone) -> FVector:
+def GetBoneLocation(bone:bpy.types.Bone) -> FVector:
 	mtxFix = Matrix(((0,1,0,0), (-1,0,0,0), (0,0,1,0), (0,0,0,1)))
 	mtxFinal = bone.matrix_local @ mtxFix.inverted()
 
@@ -229,7 +228,7 @@ def GetBoneLocation(bone:bpy_types.Bone) -> FVector:
 	return FVector(vec.x, vec.y, vec.z)
 
 
-def GetBoneRotation(bone:bpy_types.Bone) -> FMatrix3:
+def GetBoneRotation(bone:bpy.types.Bone) -> FMatrix3:
 	mtxFix = Matrix(((0,1,0,0), (-1,0,0,0), (0,0,1,0), (0,0,0,1)))
 	mtxFinal = bone.matrix_local @ mtxFix.inverted()
 
@@ -318,7 +317,7 @@ def export_action(self, context, progress, exportSettings:TxoExportSettings = Tx
 			if bone.name.lower() == exportSettings.headLookBoneName:
 				pinLookatBone = bone
 
-		def RecurseExportBone(parentBone:bpy_types.Bone, parentTxoBone:TxoBone):
+		def RecurseExportBone(parentBone:bpy.types.Bone, parentTxoBone:TxoBone):
 			if parentBone.parent == None:
 				parentTxoBone.keyframe.offset = GetBoneLocation(parentBone)
 				parentTxoBone.keyframe.rotMatrix = GetBoneRotation(parentBone)
