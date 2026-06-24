@@ -8,7 +8,7 @@ import os
 import time
 import math
 from DayzAnimationTools.Types.Txo import *
-from ..modules.bpyHandler import getOperator, setLayoutProps
+from ..modules.bpyHandler import getOperator, setLayoutProps, getLayout
 
 blender_version = bpy.app.version
 
@@ -23,9 +23,7 @@ class TXO_PT_Import_Include(bpy.types.Panel):
 		return getOperator(context).bl_idname == "IMPORT_SCENE_OT_txo"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
+		layout = getLayout(self)
 
 		operator = getOperator(context)
 
@@ -46,9 +44,7 @@ class TXO_PT_Import_Transform(bpy.types.Panel):
 		return getOperator(context).bl_idname == "IMPORT_SCENE_OT_txo"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
+		layout = getLayout(self)
 
 		layout.prop(getOperator(context), "fUnitScale")
 
@@ -63,9 +59,7 @@ class TXO_PT_Import_Armature(bpy.types.Panel):
 		return getOperator(context).bl_idname == "IMPORT_SCENE_OT_txo"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
+		layout = getLayout(self)
 
 		layout.prop(getOperator(context), "bTryConnectBones")
 

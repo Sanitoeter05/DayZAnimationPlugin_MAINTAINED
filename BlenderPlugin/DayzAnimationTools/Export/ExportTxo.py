@@ -8,7 +8,7 @@ import os
 import string
 import time
 from DayzAnimationTools.Types.Txo import *
-from ..modules.bpyHandler import getOperator, setLayoutProps
+from ..modules.bpyHandler import getOperator, setLayoutProps, getLayout
 
 
 blender_version = bpy.app.version
@@ -55,9 +55,7 @@ class TXO_PT_Export_Include(bpy.types.Panel):
 		return getOperator(context).bl_idname == "EXPORT_SCENE_OT_txo"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
+		layout = getLayout(self)
 
 		setLayoutProps(layout, getOperator(context), ["bExportSelectionOnly", "bExportShowingOnly"])
 
@@ -72,10 +70,7 @@ class TXO_PT_Export_Transform(bpy.types.Panel):
 		return getOperator(context).bl_idname == "EXPORT_SCENE_OT_txo"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
-
+		layout = getLayout(self)
 		layout.prop(getOperator(context), "fUnitScale")
 
 class TXO_PT_Export_Armature(bpy.types.Panel):
@@ -89,9 +84,7 @@ class TXO_PT_Export_Armature(bpy.types.Panel):
 		return getOperator(context).bl_idname == "EXPORT_SCENE_OT_txo"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
+		layout = getLayout(self)
 
 		operator = getOperator(context)
 

@@ -6,7 +6,7 @@ from bpy.props import *
 import os
 import time
 from DayzAnimationTools.Types.Txa import *
-from ..modules.bpyHandler import getOperator, setLayoutProps
+from ..modules.bpyHandler import getOperator, setLayoutProps, getLayout
 
 ANIM_TYPES = \
 [
@@ -28,9 +28,7 @@ class TXA_PT_Export_Include(bpy.types.Panel):
 		return getOperator(context).bl_idname == "EXPORT_SCENE_OT_txa"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
+		layout = getLayout(self)
 
 		setLayoutProps(layout, getOperator(context), ["bExportSelectedBonesOnly", "bExportShowingBonesOnly", "bExportTranslationKeys", "bExportRotationKeys", "bExportScaleKeys"])	
 
@@ -45,9 +43,7 @@ class TXA_PT_Export_Transform(bpy.types.Panel):
 		return getOperator(context).bl_idname == "EXPORT_SCENE_OT_txa"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
+		layout = getLayout(self)
 
 		layout.prop(getOperator(context), "fUnitScale")
 
@@ -62,10 +58,7 @@ class TXA_PT_Export_Animation(bpy.types.Panel):
 		return getOperator(context).bl_idname == "EXPORT_SCENE_OT_txa"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
-		
+		layout = getLayout(self)
 		setLayoutProps(layout, getOperator(context), ["fpsOverride", "eAnimType", "bSaveAll"])
 
 

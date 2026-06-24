@@ -23,4 +23,9 @@ def getOperator(context):
 def setLayoutProps(layout, operator, propsArray):
     for props in propsArray:
         layout.prop(operator, props)
-   
+
+def getLayout(self):
+    layout = self.layout
+    layout.use_property_split = True
+    layout.use_property_decorate = False
+    return layout

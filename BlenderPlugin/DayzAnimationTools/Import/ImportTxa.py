@@ -6,7 +6,7 @@ from bpy.props import *
 import os
 import time
 from DayzAnimationTools.Types.Txa import *
-from ..modules.bpyHandler import getOperator, setLayoutProps
+from ..modules.bpyHandler import getOperator, setLayoutProps, getLayout
 
 class TXA_PT_Import_Include(bpy.types.Panel):
 	bl_space_type = 'FILE_BROWSER'
@@ -19,9 +19,7 @@ class TXA_PT_Import_Include(bpy.types.Panel):
 		return getOperator(context).bl_idname == "IMPORT_SCENE_OT_txa"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
+		layout = getLayout(self)
 
 		setLayoutProps(layout, getOperator(context), ["bImportTranslationKeys", "bImportRotationKeys", "bImportScaleKeys"])
 
@@ -37,13 +35,9 @@ class TXA_PT_Import_Transform(bpy.types.Panel):
 		return getOperator(context).bl_idname == "IMPORT_SCENE_OT_txa"
 
 	def draw(self, context):
-		layout = self.layout
-		layout.use_property_split = True
-		layout.use_property_decorate = False
+		layout = getLayout(self)
 
-		operator = getOperator(context)
-
-		layout.prop(operator, "fUnitScale")
+		layout.prop(getOperator(context), "fUnitScale")
 
 def ImportTxaMenu(self, context):
 	self.layout.operator(ImportTxaOperator.bl_idname, text='DayZ Animation (.txa)', icon='ARMATURE_DATA')
