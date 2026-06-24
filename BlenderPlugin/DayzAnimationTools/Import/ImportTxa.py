@@ -6,7 +6,7 @@ from bpy.props import *
 import os
 import time
 from DayzAnimationTools.Types.Txa import *
-from ..modules.bpyHandler import getOperator
+from ..modules.bpyHandler import getOperator, setLayoutProps
 
 class TXA_PT_Import_Include(bpy.types.Panel):
 	bl_space_type = 'FILE_BROWSER'
@@ -23,11 +23,8 @@ class TXA_PT_Import_Include(bpy.types.Panel):
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		operator = getOperator(context)
+		setLayoutProps(layout, getOperator(context), ["bImportTranslationKeys", "bImportRotationKeys", "bImportScaleKeys"])
 
-		layout.prop(operator, "bImportTranslationKeys")
-		layout.prop(operator, "bImportRotationKeys")
-		layout.prop(operator, "bImportScaleKeys")
 
 class TXA_PT_Import_Transform(bpy.types.Panel):
 	bl_space_type = 'FILE_BROWSER'
@@ -380,13 +377,7 @@ def load(self, context, importSettings:TxaImportSettings = TxaImportSettings()):
 
 
 def generate_fcurves_bl51(action, armature_obj, tag_name, _type, count):
-	'''
-	Blender 5.1+ compatible fcurve generation using layered animation system.
-	_type: The type of fcurve to add
-			ex: 'location', 'rotation_quaternion', 'scale'
-	count: Number of fcurves to generate (should match up with the number of channels)
-	Returns a list of the generated fcurves
-	'''
+
 	fcurves = []
 	for index in range(count):
 		# Create fcurve using the new API - Blender 5.1 handles slot management internally
@@ -402,14 +393,6 @@ def generate_fcurves_bl51(action, armature_obj, tag_name, _type, count):
 
 
 def generate_fcurves(action_fcurves, tag_name, _type, count):
-	'''
-		'tag_name': The name of the pose bone to generate fcurves for
-		'_type': The type of fcurve to add
-				ex: 'location', 'rotation_quaternion', 'scale'
-		'count': Number of fcurves to generate (should match up with the
-				 number of channels for a given fcurve type)
-		Returns a list of the generated fcurves
-	'''
 	return [action_fcurves.new(data_path='pose.bones["%s"].%s' %
 							   (tag_name, _type),
 							   index=index,

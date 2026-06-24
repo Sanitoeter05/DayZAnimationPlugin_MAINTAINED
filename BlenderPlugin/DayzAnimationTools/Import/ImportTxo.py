@@ -8,7 +8,7 @@ import os
 import time
 import math
 from DayzAnimationTools.Types.Txo import *
-from ..modules.bpyHandler import getOperator
+from ..modules.bpyHandler import getOperator, setLayoutProps
 
 blender_version = bpy.app.version
 
@@ -29,10 +29,7 @@ class TXO_PT_Import_Include(bpy.types.Panel):
 
 		operator = getOperator(context)
 
-		layout.prop(operator, "bImportSkeleton")
-		layout.prop(operator, "bImportMesh")
-		layout.prop(operator, "bImportNormals")
-		layout.prop(operator, "bImportUVs")
+		setLayoutProps(layout, operator, ["bImportSkeleton","bImportMesh", "bImportNormals", "bImportUVs"])
 		if blender_version >= (4, 1, 0):
 			layout.prop(operator, "bSmoothShading")
 			if operator.bSmoothShading:
@@ -53,9 +50,7 @@ class TXO_PT_Import_Transform(bpy.types.Panel):
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		operator = getOperator(context)
-
-		layout.prop(operator, "fUnitScale")
+		layout.prop(getOperator(context), "fUnitScale")
 
 class TXO_PT_Import_Armature(bpy.types.Panel):
 	bl_space_type = 'FILE_BROWSER'
@@ -72,9 +67,7 @@ class TXO_PT_Import_Armature(bpy.types.Panel):
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		operator = getOperator(context)
-
-		layout.prop(operator, "bTryConnectBones")
+		layout.prop(getOperator(context), "bTryConnectBones")
 
 def ImportTxoMenu(self, context):
 	self.layout.operator(ImportTxoOperator.bl_idname, text='DayZ Object (.txo)', icon='OBJECT_DATA')

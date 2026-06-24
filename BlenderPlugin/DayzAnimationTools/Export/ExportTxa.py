@@ -6,7 +6,7 @@ from bpy.props import *
 import os
 import time
 from DayzAnimationTools.Types.Txa import *
-from ..modules.bpyHandler import getOperator
+from ..modules.bpyHandler import getOperator, setLayoutProps
 
 ANIM_TYPES = \
 [
@@ -32,13 +32,7 @@ class TXA_PT_Export_Include(bpy.types.Panel):
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		operator = getOperator(context)
-
-		layout.prop(operator, "bExportSelectedBonesOnly")
-		layout.prop(operator, "bExportShowingBonesOnly")
-		layout.prop(operator, "bExportTranslationKeys")
-		layout.prop(operator, "bExportRotationKeys")
-		layout.prop(operator, "bExportScaleKeys")
+		setLayoutProps(layout, getOperator(context), ["bExportSelectedBonesOnly", "bExportShowingBonesOnly", "bExportTranslationKeys", "bExportRotationKeys", "bExportScaleKeys"])	
 
 class TXA_PT_Export_Transform(bpy.types.Panel):
 	bl_space_type = 'FILE_BROWSER'
@@ -55,9 +49,7 @@ class TXA_PT_Export_Transform(bpy.types.Panel):
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		operator = getOperator(context)
-
-		layout.prop(operator, "fUnitScale")
+		layout.prop(getOperator(context), "fUnitScale")
 
 class TXA_PT_Export_Animation(bpy.types.Panel):
 	bl_space_type = 'FILE_BROWSER'
@@ -74,11 +66,8 @@ class TXA_PT_Export_Animation(bpy.types.Panel):
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 		
-		operator = getOperator(context)
-		
-		layout.prop(operator, "fpsOverride")
-		layout.prop(operator, "eAnimType")
-		layout.prop(operator, "bSaveAll")
+		setLayoutProps(layout, getOperator(context), ["fpsOverride", "eAnimType", "bSaveAll"])
+
 
 def ExportTxaMenu(self, context):
 	self.layout.operator(ExportTxaOperator.bl_idname, text='DayZ Animation (.txa)', icon='ARMATURE_DATA')
@@ -174,10 +163,6 @@ class ExportTxaOperator(bpy.types.Operator, ExportHelper):
 
 
 def ShouldSkipBone(bone:bpy.types.Bone, exportSettings:TxaExportSettings = TxaExportSettings(), armatureObj:bpy.types.Object = None) -> bool:
-	'''
-		Conditions that determine whether
-		or not to skip exporting this bone
-	'''
 
 	if bone.name.lower().endswith('ik_helper'):
 		return True

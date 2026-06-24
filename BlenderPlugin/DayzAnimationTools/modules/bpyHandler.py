@@ -19,3 +19,8 @@ def getOperator(context):
     sfile = context.space_data
     operator = sfile.active_operator
     return operator
+
+def setLayoutProps(layout, operator, propsArray):
+    for props in propsArray:
+        layout.prop(operator, props)
+   

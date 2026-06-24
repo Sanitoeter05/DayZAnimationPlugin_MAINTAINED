@@ -8,7 +8,7 @@ import os
 import string
 import time
 from DayzAnimationTools.Types.Txo import *
-from ..modules.bpyHandler import getOperator
+from ..modules.bpyHandler import getOperator, setLayoutProps
 
 
 blender_version = bpy.app.version
@@ -59,10 +59,7 @@ class TXO_PT_Export_Include(bpy.types.Panel):
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		operator = getOperator(context)
-
-		layout.prop(operator, "bExportSelectionOnly")
-		layout.prop(operator, "bExportShowingOnly")
+		setLayoutProps(layout, getOperator(context), ["bExportSelectionOnly", "bExportShowingOnly"])
 
 class TXO_PT_Export_Transform(bpy.types.Panel):
 	bl_space_type = 'FILE_BROWSER'
@@ -79,9 +76,7 @@ class TXO_PT_Export_Transform(bpy.types.Panel):
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		operator = getOperator(context)
-
-		layout.prop(operator, "fUnitScale")
+		layout.prop(getOperator(context), "fUnitScale")
 
 class TXO_PT_Export_Armature(bpy.types.Panel):
 	bl_space_type = 'FILE_BROWSER'
@@ -100,13 +95,12 @@ class TXO_PT_Export_Armature(bpy.types.Panel):
 
 		operator = getOperator(context)
 
-		layout.prop(operator, "bEnsureEntityPosition")
-		layout.prop(operator, "bAutoCreateHeadLookBone")
+		setLayoutProps(layout, operator, ["bEnsureEntityPosition", "bAutoCreateHeadLookBone"])
+		
 		sub = layout.column()
 		sub.enabled = operator.bAutoCreateHeadLookBone
-		sub.prop(operator, "headLookBoneName")
-		sub.prop(operator, "headLookBoneParentName")
-		sub.prop(operator, "headLookOffset")
+		
+		setLayoutProps(sub, operator, ["headLookBoneName", "headLookBoneParentName", "headLookOffset"])
 
 
 def ExportTxoMenu(self, context):
@@ -196,10 +190,6 @@ class ExportTxoOperator(bpy.types.Operator, ExportHelper):
 		return True
 
 def ShouldExportBone(poseBone:bpy.types.Bone) -> bool:
-	'''
-		Conditions that determine whether
-		or not to skip exporting this bone
-	'''
 
 	if poseBone.name.lower().endswith('ik_helper'):
 		return False
