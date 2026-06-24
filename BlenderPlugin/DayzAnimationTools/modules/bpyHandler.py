@@ -14,3 +14,8 @@ def unregisterClasses(classes):
 def unregisterMenus(menus, menuClass):
     for menu in menus:
         getattr(bpy.types, menuClass).remove(menu)
+
+def getOperator(context):
+    sfile = context.space_data
+    operator = sfile.active_operator
+    return operator

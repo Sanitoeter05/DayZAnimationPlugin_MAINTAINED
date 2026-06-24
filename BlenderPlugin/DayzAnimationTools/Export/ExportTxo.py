@@ -1,13 +1,15 @@
 import bpy
 import bmesh
 from mathutils import *
-from bpy_extras.wm_utils.progress_report import ProgressReport, ProgressReportSubstep
+from bpy_extras.wm_utils.progress_report import ProgressReport
 from bpy_extras.io_utils import ExportHelper
 from bpy.props import *
 import os
 import string
 import time
 from DayzAnimationTools.Types.Txo import *
+from ..modules.bpyHandler import getOperator
+
 
 blender_version = bpy.app.version
 
@@ -50,17 +52,14 @@ class TXO_PT_Export_Include(bpy.types.Panel):
 
 	@classmethod
 	def poll(cls, context):
-		sfile = context.space_data
-		operator = sfile.active_operator
-		return operator.bl_idname == "EXPORT_SCENE_OT_txo"
+		return getOperator(context).bl_idname == "EXPORT_SCENE_OT_txo"
 
 	def draw(self, context):
 		layout = self.layout
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		sfile = context.space_data
-		operator = sfile.active_operator
+		operator = getOperator(context)
 
 		layout.prop(operator, "bExportSelectionOnly")
 		layout.prop(operator, "bExportShowingOnly")
@@ -73,17 +72,14 @@ class TXO_PT_Export_Transform(bpy.types.Panel):
 
 	@classmethod
 	def poll(cls, context):
-		sfile = context.space_data
-		operator = sfile.active_operator
-		return operator.bl_idname == "EXPORT_SCENE_OT_txo"
+		return getOperator(context).bl_idname == "EXPORT_SCENE_OT_txo"
 
 	def draw(self, context):
 		layout = self.layout
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		sfile = context.space_data
-		operator = sfile.active_operator
+		operator = getOperator(context)
 
 		layout.prop(operator, "fUnitScale")
 
@@ -95,17 +91,14 @@ class TXO_PT_Export_Armature(bpy.types.Panel):
 
 	@classmethod
 	def poll(cls, context):
-		sfile = context.space_data
-		operator = sfile.active_operator
-		return operator.bl_idname == "EXPORT_SCENE_OT_txo"
+		return getOperator(context).bl_idname == "EXPORT_SCENE_OT_txo"
 
 	def draw(self, context):
 		layout = self.layout
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		sfile = context.space_data
-		operator = sfile.active_operator
+		operator = getOperator(context)
 
 		layout.prop(operator, "bEnsureEntityPosition")
 		layout.prop(operator, "bAutoCreateHeadLookBone")

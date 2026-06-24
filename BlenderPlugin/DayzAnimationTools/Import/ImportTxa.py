@@ -6,6 +6,7 @@ from bpy.props import *
 import os
 import time
 from DayzAnimationTools.Types.Txa import *
+from ..modules.bpyHandler import getOperator
 
 class TXA_PT_Import_Include(bpy.types.Panel):
 	bl_space_type = 'FILE_BROWSER'
@@ -15,17 +16,14 @@ class TXA_PT_Import_Include(bpy.types.Panel):
 
 	@classmethod
 	def poll(cls, context):
-		sfile = context.space_data
-		operator = sfile.active_operator
-		return operator.bl_idname == "IMPORT_SCENE_OT_txa"
+		return getOperator(context).bl_idname == "IMPORT_SCENE_OT_txa"
 
 	def draw(self, context):
 		layout = self.layout
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		sfile = context.space_data
-		operator = sfile.active_operator
+		operator = getOperator(context)
 
 		layout.prop(operator, "bImportTranslationKeys")
 		layout.prop(operator, "bImportRotationKeys")
@@ -39,17 +37,14 @@ class TXA_PT_Import_Transform(bpy.types.Panel):
 
 	@classmethod
 	def poll(cls, context):
-		sfile = context.space_data
-		operator = sfile.active_operator
-		return operator.bl_idname == "IMPORT_SCENE_OT_txa"
+		return getOperator(context).bl_idname == "IMPORT_SCENE_OT_txa"
 
 	def draw(self, context):
 		layout = self.layout
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		sfile = context.space_data
-		operator = sfile.active_operator
+		operator = getOperator(context)
 
 		layout.prop(operator, "fUnitScale")
 
